@@ -3,6 +3,7 @@ import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 import './App.css';
 import Navigation from './components/navigation/Navigation';
+import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Logo from './components/logo/Logo';
 import ImageLinkForm from './components/imageLinkForm/ImageLinkForm';
 import Rank from './components/Rank/Rank';
@@ -29,15 +30,20 @@ class App extends Component {
     super()
     this.state = {
       input: '',
+      imageUrl: '',
     }
   }
 
   onInputChange = (event) => {
-    console.log(event.target.value);
+    this.setState({ input: event.target.value });
   }
 
   onButtonSubmit = () => {
-    app.models.predict("d02b4508df58432fbb84e800597b8959", "https://samples.clarifai.com/face-det.jpg").then(
+    this.setState({imageUrl: this.state.input})
+    app.models.predict(
+      Clarifai.FACE_DETECT_MODEL,
+      this.state.input)
+      .then(
     function(response) {
       console.log(response)
     },
@@ -59,7 +65,7 @@ class App extends Component {
         <ImageLinkForm 
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit} />
-        {/* <aceRecognition /> */}
+        <FaceRecognition imageUrl={this.state.imageUrl} />
       </div>
     );
   }
