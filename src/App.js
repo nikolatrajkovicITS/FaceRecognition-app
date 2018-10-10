@@ -3,6 +3,7 @@ import Particles from 'react-particles-js';
 import Clarifai from 'clarifai';
 import './App.css';
 import Navigation from './components/navigation/Navigation';
+import Signin from './components/Signin/Signin';
 import FaceRecognition from './components/FaceRecognition/FaceRecognition';
 import Logo from './components/logo/Logo';
 import ImageLinkForm from './components/imageLinkForm/ImageLinkForm';
@@ -49,6 +50,11 @@ class App extends Component {
     }
   }
 
+  displayFaceBox = (box) => {
+    console.log(box)
+    this.setState({box: box})
+  }
+
   onInputChange = (event) => {
     this.setState({ input: event.target.value });
   }
@@ -58,7 +64,7 @@ class App extends Component {
     app.models.predict(
       Clarifai.FACE_DETECT_MODEL,
       this.state.input)
-      .then(response => this.calculateFaceLocation(response)
+      .then(response => this.displayFaceBox(this.calculateFaceLocation(response))
       .catch(err => console.log(err))
       );
   }
@@ -70,12 +76,13 @@ class App extends Component {
                    params={particlesOptions}
           />
         <Navigation />
+        <Signin />
         <Logo />
         <Rank />
         <ImageLinkForm 
           onInputChange={this.onInputChange}
           onButtonSubmit={this.onButtonSubmit} />
-        <FaceRecognition imageUrl={this.state.imageUrl} />
+        <FaceRecognition box={this.state.box} imageUrl={this.state.imageUrl} />
       </div>
     );
   }
